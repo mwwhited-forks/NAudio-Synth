@@ -10,7 +10,7 @@ namespace NAudio_Synth
         private bool _isPlaying;
         private double _phase;
         private float _tuning;
-        private int _note; 
+        private int _note;
 
         public EventHandler FinishedPlaying;
 
@@ -30,7 +30,7 @@ namespace NAudio_Synth
             _note = 69;
             Frequency = 440;
 
-            Function = x => (float) Math.Cos(2 * Math.PI * x);
+            Function = x => (float)Math.Cos(2 * Math.PI * x);
 
             _phase = 0;
         }
@@ -70,7 +70,8 @@ namespace NAudio_Synth
         }
         public float Frequency { get; set; }
 
-        public float Tuning {
+        public float Tuning
+        {
             get => _tuning;
             set
             {
@@ -90,15 +91,8 @@ namespace NAudio_Synth
             }
         }
 
-        public bool IsPlaying()
-        {
-            return _isPlaying;
-        }
-
-        public bool IsOnRelease()
-        {
-            return _amplitudeEnvelope.State == EnvelopeGenerator.EnvelopeState.Release;
-        }
+        public bool IsPlaying() => _isPlaying;
+        public bool IsOnRelease() => _amplitudeEnvelope.State == EnvelopeGenerator.EnvelopeState.Release;
 
         public void NoteOn()
         {
@@ -106,30 +100,30 @@ namespace NAudio_Synth
             _isPlaying = true;
         }
 
-        public void NoteOff() { _amplitudeEnvelope.Gate(false); }
+        public void NoteOff() => _amplitudeEnvelope.Gate(false);
 
         public override int Read(float[] buffer, int offset, int sampleCount)
         {
             for (var index = 0; index < sampleCount; index += WaveFormat.Channels)
             {
-                if(_amplitudeEnvelope.State != EnvelopeGenerator.EnvelopeState.Idle)
+                if (_amplitudeEnvelope.State != EnvelopeGenerator.EnvelopeState.Idle)
                 {
                     _phase = (_phase + Frequency / WaveFormat.SampleRate) % 1;
 
-                    buffer[offset + index] = Function((float) _phase) * Amplitude * _amplitudeEnvelope.Process();
+                    buffer[offset + index] = Function((float)_phase) * Amplitude * _amplitudeEnvelope.Process();
 
-                    for (var channel = 1; channel < WaveFormat.Channels; ++ channel)
+                    for (var channel = 1; channel < WaveFormat.Channels; ++channel)
                         buffer[offset + index + channel] = buffer[offset + index];
                 }
                 else
                 {
-                    if(_isPlaying)
+                    if (_isPlaying)
                     {
                         _isPlaying = false;
                         FinishedPlaying?.Invoke(this, new EventArgs());
                     }
 
-                    for (var channel = 0; channel < WaveFormat.Channels; ++ channel)
+                    for (var channel = 0; channel < WaveFormat.Channels; ++channel)
                         buffer[index + offset + channel] = 0;
                 }
             }

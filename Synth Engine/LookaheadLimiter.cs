@@ -1,5 +1,6 @@
 ﻿using System;
 using NAudio.Wave;
+using static System.Math;
 
 namespace NAudio_Synth
 {
@@ -23,24 +24,13 @@ namespace NAudio_Synth
             _bufferR = new float[bufferSize];
         }
 
-        private int Norm(int i)
-        {
-            return i % _bufferL.Length; 
-        }
-
-        private static float Bound(float min, float max, float value)
-        {
-            return value < min
+        private int Norm(int i) => i % _bufferL.Length;
+        private static float Bound(float min, float max, float value) =>
+            value < min
                 ? min
                 : value > max
                     ? max
                     : value;
-        }
-
-        private static float Abs(float x)
-        {
-            return Math.Abs(x);
-        }
 
         private void Process(float[] buffer, ref int pos, ref float multiplier, float newSample)
         {
@@ -51,9 +41,9 @@ namespace NAudio_Synth
             var peakPos = 0;
 
             for (var i = 0; i < buffer.Length; ++i)
-                if ((Abs(buffer[Norm(pos + i)]) - _limit) /       (i + 1)
+                if ((Abs(buffer[Norm(pos + i)]) - _limit) / (i + 1)
                     >
-                    (Abs(peak) - _limit)                    / (peakPos + 1))
+                    (Abs(peak) - _limit) / (peakPos + 1))
                 {
                     peak = buffer[Norm(pos + i)];
                     peakPos = i;
@@ -62,7 +52,7 @@ namespace NAudio_Synth
             if (Abs(peak) * multiplier >= _limit)
                 multiplier -= (multiplier - _limit / Abs(peak)) / (peakPos + 1);
             else if (multiplier < 1)
-                multiplier = Math.Min(
+                multiplier = Min(
                     1,
                     multiplier + Bound(
                         0,
@@ -81,7 +71,7 @@ namespace NAudio_Synth
                 return _bufferL[_posL] * (
                            ProcessStereoSeparately
                                ? _multiplierL
-                               : Math.Min(_multiplierL, _multiplierR));
+                               : Min(_multiplierL, _multiplierR));
             }
             else
             {
@@ -90,7 +80,7 @@ namespace NAudio_Synth
                 return _bufferR[_posR] * (
                            ProcessStereoSeparately
                                ? _multiplierR
-                               : Math.Min(_multiplierL, _multiplierR));
+                               : Min(_multiplierL, _multiplierR));
             }
         }
     }

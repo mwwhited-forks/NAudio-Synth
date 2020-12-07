@@ -6,7 +6,7 @@ namespace NAudio_Synth
 {
     public class SynthEngine : WaveProvider32
     {
-        public enum Waveforms {Sine, Sawtooth, Square, Triangle, Noise};
+        public enum Waveforms { Sine, Sawtooth, Square, Triangle, Noise };
 
         private Waveforms _waveform;
         private WaveMixer32 _mixer;
@@ -42,10 +42,10 @@ namespace NAudio_Synth
             set
             {
                 _waveform = value;
-                switch(_waveform)
+                switch (_waveform)
                 {
                     case Waveforms.Sine:
-                        WaveformFunction = x => (float) Math.Cos(x * 2 * Math.PI);
+                        WaveformFunction = x => (float)Math.Cos(x * 2 * Math.PI);
                         break;
                     case Waveforms.Sawtooth:
                         WaveformFunction = x => 2 * x - 1;
@@ -66,91 +66,181 @@ namespace NAudio_Synth
         public Func<float, float> WaveformFunction
         {
             get => _oscillators[0].Function;
-            set { _oscillators.ForEach(osc => osc.Function = value); }
+            set
+            {
+                foreach (var osc in _oscillators)
+                {
+                    osc.Function = value;
+                }
+            }
         }
 
         public float Amplitude
         {
             get => _oscillators[0].Amplitude;
-            set { _oscillators.ForEach(osc => osc.Amplitude = value); }
+            set
+            {
+                foreach (var osc in _oscillators)
+                {
+                    osc.Amplitude = value;
+                }
+            }
         }
 
         public float Attack
         {
             get => _oscillators[0].Attack;
-            set { _oscillators.ForEach(osc => osc.Attack = value); }
+            set
+            {
+                foreach (var osc in _oscillators)
+                {
+                    osc.Attack = value;
+                }
+            }
         }
 
         public float Decay
         {
             get => _oscillators[0].Decay;
-            set { _oscillators.ForEach(osc => osc.Decay = value); }
+            set
+            {
+                foreach (var osc in _oscillators)
+                {
+                    osc.Decay = value;
+                }
+            }
         }
 
         public float Sustain
         {
             get => _oscillators[0].Sustain;
-            set { _oscillators.ForEach(osc => osc.Sustain = value); }
+            set
+            {
+                foreach (var osc in _oscillators)
+                {
+                    osc.Sustain = value;
+                }
+            }
         }
 
         public float Release
         {
             get => _oscillators[0].Release;
-            set { _oscillators.ForEach(osc => osc.Release = value); }
+            set
+            {
+                foreach (var osc in _oscillators)
+                {
+                    osc.Release = value;
+                }
+            }
         }
 
         public float FilterCutoff
         {
             get => _oscillators[0].FilterCutoff;
-            set { _oscillators.ForEach(osc => osc.FilterCutoff = value); }
+            set
+            {
+                foreach (var osc in _oscillators)
+                {
+                    osc.FilterCutoff = value;
+                }
+            }
         }
 
         public float FilterQ
         {
             get => _oscillators[0].FilterQ;
-            set { _oscillators.ForEach(osc => osc.FilterQ = value); }
+            set
+            {
+                foreach (var osc in _oscillators)
+                {
+                    osc.FilterQ = value;
+                }
+            }
         }
 
         public FilterMode FilterMode
         {
             get => _oscillators[0].FilterMode;
-            set { _oscillators.ForEach(osc => osc.FilterMode = value); }
+            set
+            {
+                foreach (var osc in _oscillators)
+                {
+                    osc.FilterMode = value;
+                }
+            }
         }
 
         public float FilterLevel
         {
             get => _oscillators[0].FilterLevel;
-            set { _oscillators.ForEach(osc => osc.FilterLevel = value); }
+            set
+            {
+                foreach (var osc in _oscillators)
+                {
+                    osc.FilterLevel = value;
+                }
+            }
         }
 
         public float FilterAttack
         {
             get => _oscillators[0].FilterAttack;
-            set { _oscillators.ForEach(osc => osc.FilterAttack = value); }
+            set
+            {
+                foreach (var osc in _oscillators)
+                {
+                    osc.FilterAttack = value;
+                }
+            }
         }
 
         public float FilterSustain
         {
             get => _oscillators[0].FilterSustain;
-            set { _oscillators.ForEach(osc => osc.FilterSustain = value); }
+            set
+            {
+                foreach (var osc in _oscillators)
+                {
+                    osc.FilterSustain = value;
+                }
+            }
         }
 
         public float FilterDecay
         {
             get => _oscillators[0].FilterDecay;
-            set { _oscillators.ForEach(osc => osc.FilterDecay= value); }
+            set
+            {
+                foreach (var osc in _oscillators)
+                {
+                    osc.FilterDecay = value;
+                }
+            }
         }
 
         public float FilterRelease
         {
             get => _oscillators[0].FilterRelease;
-            set { _oscillators.ForEach(osc => osc.FilterRelease = value); }
+            set
+            {
+                foreach (var osc in _oscillators)
+                {
+                    osc.FilterRelease = value;
+                }
+            }
         }
 
         public float FilterEnvelopeOctaves
         {
             get => _oscillators[0].FilterEnvelopeOctaves;
-            set { _oscillators.ForEach(osc => osc.FilterEnvelopeOctaves = value); }
+            set
+            {
+                foreach (var osc in _oscillators)
+                {
+                    osc.FilterEnvelopeOctaves = value;
+                }
+            }
         }
 
         public void NoteOn(int note)
@@ -164,7 +254,7 @@ namespace NAudio_Synth
                 _mixer.AddInput(osc);
             }
             else
-                Console.WriteLine("exceded max number of voices ({0})", _oscillators.Count);
+                Console.WriteLine("exceeded max number of voices ({0})", _oscillators.Count);
         }
 
         public void NoteOff(int note)
@@ -199,9 +289,6 @@ namespace NAudio_Synth
             set => _reverb.Damping = value;
         }
 
-        public override int Read(float[] buffer, int offset, int count)
-        {
-            return _limiter.Read(buffer, offset, count);
-        }
+        public override int Read(float[] buffer, int offset, int count) => _limiter.Read(buffer, offset, count);
     }
 }
